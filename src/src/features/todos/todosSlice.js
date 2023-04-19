@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const initState = {
   entities: [
     { id: 1, text: "Deign ui", completed: true, color: "red" },
@@ -14,13 +16,14 @@ export const actionTypes = {
   TOGGLETODO: "todos/ToggleTodo",
 };
 
-export const todosReducer = ({ state = initState, action }) => {
+export const todosReducer = (state = initState, action) => {
   switch (action.type) {
     case actionTypes.TOGGLETODO:
+      const toggledTodoId = action.payload.id;
       return {
         ...state,
         entities: state.entities.map((todo) => {
-          if (todo.id !== toggledTodoId) {
+          if (todo.id !== action.payload.id) {
             return todo;
           }
           return {
@@ -46,4 +49,11 @@ export const todosReducer = ({ state = initState, action }) => {
     default:
       return state;
   }
+};
+
+export const TodoAdd = (text) => {
+  return {
+    type: actionTypes.ADDTODO,
+    payload: { id: 77, text: text, completed: false },
+  };
 };
