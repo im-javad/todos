@@ -1,3 +1,5 @@
+import { produce } from "immer";
+
 const initState = {
   entities: {
     1: { id: 1, text: "Deign ui", completed: true, color: "red" },
@@ -14,44 +16,23 @@ export const actionTypes = {
   TOGGLETODO: "todos/ToggleTodo",
 };
 
-export const todosReducer = (state = initState, action) => {
+export const todosReducer = produce((state, action) => {
   switch (action.type) {
     case actionTypes.TOGGLETODO:
       const toggledTodoId = action.payload.id;
-      return {
-        ...state,
-        entities: {
-          ...state.entities,
-          [toggledTodoId]: {
-            ...state.entities[toggledTodoId],
-            completed: !state.entities[toggledTodoId].completed,
-          },
-        },
-      };
-
+      const todoCompletedStatus = state.entities[toggledTodoId];
+      todoCompletedStatus.completed = !todoCompletedStatus.completed;
+      break;
     case actionTypes.ADDTODO:
       const todo = action.payload;
-      return {
-        ...state,
-        entities: {
-          ...state.entities,
-          [todo.id]: todo,
-        },
-      };
-
+      state.entities[todo.id] = todo;
+      break;
     case actionTypes.DELETETODO:
       const deletedTodoId = action.payload.id;
-      const entities = { ...state.entities };
-      delete entities[deletedTodoId];
-      return {
-        ...state,
-        entities,
-      };
-
-    default:
-      return state;
+      delete state.entities[deletedTodoId];
+      break;
   }
-};
+}, initState);
 
 export const todoAdd = (text) => {
   return {
