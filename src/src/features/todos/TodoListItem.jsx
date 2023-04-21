@@ -1,13 +1,15 @@
 import { AiFillDelete } from "react-icons/ai";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleTodo, deleteTodo } from "./todosSlice";
 
 const availableColors = ["green", "red", "black", "orang", "aqua"];
 
 const capitalize = (s) => s[0].toUpperCase() + s.slice(1);
 
-function TodoListItem({ key, todo }) {
-  const { id, text, completed, color } = todo;
+function TodoListItem({ id }) {
+  const todo = useSelector((state) => state.todos.entities[id]);
+
+  const { text, completed, color } = todo;
 
   const dispatch = useDispatch();
 
@@ -18,11 +20,11 @@ function TodoListItem({ key, todo }) {
   ));
 
   function handleCompleted() {
-    dispatch(toggleTodo(id));
+    dispatch(toggleTodo(todo.id));
   }
 
   function handleDelete() {
-    dispatch(deleteTodo(id));
+    dispatch(deleteTodo(todo.id));
   }
 
   return (
@@ -56,4 +58,3 @@ function TodoListItem({ key, todo }) {
 }
 
 export default TodoListItem;
-

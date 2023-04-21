@@ -1,11 +1,12 @@
-import { useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import TodoListItem from "./TodoListItem";
+import { todoIds } from "./todosSlice";
 
 const TodoList = () => {
-  const todos = useSelector((state) => state.todos.entities);
+  const todosIds = useSelector(todoIds , shallowEqual);
 
-  const renderListItems = Object.keys(todos).map((todoId) => (
-    <TodoListItem key={todoId} todo={todos[todoId]} />
+  const renderListItems = todosIds.map((id) => (
+    <TodoListItem key={id} id={id} />
   ));
 
   return <ul className="todo-list">{renderListItems}</ul>;

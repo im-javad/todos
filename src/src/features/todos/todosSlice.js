@@ -73,3 +73,5 @@ export const deleteTodo = (id) => {
     payload: { id },
   };
 };
+
+export const todoIds = (state) => Object.keys(state.todos.entities);
