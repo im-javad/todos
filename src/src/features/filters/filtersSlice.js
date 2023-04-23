@@ -41,6 +41,7 @@ export const filterReducer = produce((state, action) => {
   }
 }, initState);
 
+export const selectFilters = (state) => state.filters;
 export const selectStatus = (state) => state.filters.status;
 export const selectColors = (state) => state.filters.colors;
 

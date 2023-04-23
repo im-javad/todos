@@ -1,5 +1,6 @@
 import { produce } from "immer";
-import { availableStatus } from "../filters/filtersSlice";
+import { availableStatus, selectFilters } from "../filters/filtersSlice";
+import { createSelector } from "reselect";
 
 const initState = {
   entities: {
@@ -56,6 +57,46 @@ export const deleteTodo = (id) => {
   };
 };
 
+export const selectTodoEntities = (state) => state.todos.entities;
+
+export const todoIds = (state) => Object.keys(state.todos.entities);
+
+const selectTodosVal = createSelector(selectTodoEntities, (entities) =>
+  Object.values(entities)
+);
+
+/* Method 3 */
+const selectFilterTodos = createSelector(
+  selectTodosVal,
+  selectFilters,
+  (todos, filters) => {
+    const { status, colors } = filters;
+
+    const showAll = status === availableStatus.All;
+
+    if (showAll && colors.length === 0) return todos;
+
+    const showCompleted = status === availableStatus.Completed;
+
+    const filteredTodos = todos.filter((todo) => {
+      const statusFilter = showAll || todo.completed === showCompleted;
+      const colorsFilter = colors.length === 0 || colors.includes(todo.color);
+      return statusFilter && colorsFilter;
+    });
+
+    return filteredTodos;
+  }
+);
+
+export const selectFilteredTodoIds = createSelector(
+  selectFilterTodos,
+  (filteredTodos) => {
+    return filteredTodos.map((todo) => todo.id);
+  }
+);
+
+// ---------------------------------------------------------------------------
+
 /* Method 1 
 const selectFilterTodos = (state) => {
   const { status, colors } = state.filters;
@@ -83,9 +124,9 @@ const selectFilterTodos = (state) => {
 };
 */
 
-/* Method 2 */
+/* Method 2 
 export const selectFilterTodos = (state) => {
-  const todos = Object.values(selectTodos(state));
+  const todos = selectTodosVal(state);
 
   const { status, colors } = state.filters;
 
@@ -103,13 +144,4 @@ export const selectFilterTodos = (state) => {
 
   return filteredTodos;
 };
-
-export const selectFilteredTodoIds = (state) => {
-  const filtedreTodos = selectFilterTodos(state);
-
-  return filtedreTodos.map((todo) => todo.id);
-};
-
-export const selectTodos = (state) => state.todos.entities;
-
-export const todoIds = (state) => Object.keys(state.todos.entities);
+*/
