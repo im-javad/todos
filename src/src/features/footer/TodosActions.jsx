@@ -23,7 +23,6 @@ function TodosActions() {
       </button>
     </>
   );
-  
 }
 
 export default TodosActions;

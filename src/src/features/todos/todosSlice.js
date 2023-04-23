@@ -85,7 +85,7 @@ export const selectTodoEntities = (state) => state.todos.entities;
 
 export const todoIds = (state) => Object.keys(state.todos.entities);
 
-const selectTodosVal = createSelector(selectTodoEntities, (entities) =>
+export const selectTodosVal = createSelector(selectTodoEntities, (entities) =>
   Object.values(entities)
 );
 
