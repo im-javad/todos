@@ -1,4 +1,5 @@
 import { produce } from "immer";
+import { availableStatus } from "../filters/filtersSlice";
 
 const initState = {
   entities: {
@@ -54,5 +55,61 @@ export const deleteTodo = (id) => {
     payload: { id },
   };
 };
+
+/* Method 1 
+const selectFilterTodos = (state) => {
+  const { status, colors } = state.filters;
+  const todos = state.todos.entities;
+  const statusFiltered = [];
+
+  for (let key in todos) {
+    const todo = todos[key];
+    const completed = todo.completed;
+    if (status === "all") {
+      statusFiltered.push(todo);
+    } else if (status === "pending" && !completed) {
+      statusFiltered.push(todo);
+    } else if (status === "completed" && completed) {
+      statusFiltered.push(todo);
+    }
+  }
+
+  const colorFiltered =
+    colors.length === 0
+      ? statusFiltered
+      : statusFiltered.filter((todo) => colors.includes(todo.color));
+
+  return colorFiltered;
+};
+*/
+
+/* Method 2 */
+export const selectFilterTodos = (state) => {
+  const todos = Object.values(selectTodos(state));
+
+  const { status, colors } = state.filters;
+
+  const showAll = status === availableStatus.All;
+
+  if (showAll && colors.length === 0) return todos;
+
+  const showCompleted = status === availableStatus.Completed;
+
+  const filteredTodos = todos.filter((todo) => {
+    const statusFilter = showAll || todo.completed === showCompleted;
+    const colorsFilter = colors.length === 0 || colors.includes(todo.color);
+    return statusFilter && colorsFilter;
+  });
+
+  return filteredTodos;
+};
+
+export const selectFilteredTodoIds = (state) => {
+  const filtedreTodos = selectFilterTodos(state);
+
+  return filtedreTodos.map((todo) => todo.id);
+};
+
+export const selectTodos = (state) => state.todos.entities;
 
 export const todoIds = (state) => Object.keys(state.todos.entities);

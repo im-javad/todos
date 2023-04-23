@@ -3,10 +3,11 @@ import {
   actionColorFolterTypes,
   availableColors,
   colorFilterhandle,
+  selectColors,
 } from "../filters/filtersSlice";
 
 const ColorFilters = () => {
-  const colors = useSelector((state) => state.filters.colors);
+  const colors = useSelector(selectColors);
 
   const dispatch = useDispatch();
 

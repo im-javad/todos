@@ -1,8 +1,8 @@
-import { availableStatus, statusFilterhandle } from "../filters/filtersSlice";
+import { availableStatus, selectStatus, statusFilterhandle } from "../filters/filtersSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const StatusFilter = () => {
-  const activeStatus = useSelector((state) => state.filters.status);
+  const activeStatus = useSelector(selectStatus);
 
   const dispatch = useDispatch();
 
