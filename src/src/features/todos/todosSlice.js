@@ -16,6 +16,8 @@ export const actionTypes = {
   ADDTODO: "todos/AddTodo",
   DELETETODO: "todos/DeleteTodo",
   TOGGLETODO: "todos/ToggleTodo",
+  MARKALLCOMPLETED: "todos/MarkAllCompleted",
+  CLEARCOMPLETED: "todos/ClearCompleted",
 };
 
 export const todosReducer = produce((state, action) => {
@@ -32,6 +34,16 @@ export const todosReducer = produce((state, action) => {
     case actionTypes.DELETETODO:
       const deletedTodoId = action.payload.id;
       delete state.entities[deletedTodoId];
+      break;
+    case actionTypes.MARKALLCOMPLETED:
+      Object.values(state.entities).forEach((todo) => {
+        state.entities[todo.id].completed = true;
+      });
+      break;
+    case actionTypes.CLEARCOMPLETED:
+      Object.values(state.entities).forEach((todo) => {
+        if (todo.completed) delete state.entities[todo.id];
+      });
       break;
   }
 }, initState);
@@ -54,6 +66,18 @@ export const deleteTodo = (id) => {
   return {
     type: actionTypes.DELETETODO,
     payload: { id },
+  };
+};
+
+export const markAllCompleted = () => {
+  return {
+    type: actionTypes.MARKALLCOMPLETED,
+  };
+};
+
+export const clearCompleted = () => {
+  return {
+    type: actionTypes.CLEARCOMPLETED,
   };
 };
 

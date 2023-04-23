@@ -34,7 +34,7 @@ function TodoListItem({ id }) {
           <input
             className="toggle"
             type="checkbox"
-            defaultChecked={completed}
+            checked={completed}
             onClick={handleCompleted}
           />
           <div className="todo-text">{text}</div>
