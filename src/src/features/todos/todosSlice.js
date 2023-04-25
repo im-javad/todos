@@ -18,6 +18,7 @@ export const actionTypes = {
   TOGGLETODO: "todos/ToggleTodo",
   MARKALLCOMPLETED: "todos/MarkAllCompleted",
   CLEARCOMPLETED: "todos/ClearCompleted",
+  CHANGECOLOR: "todos/ChangeColor",
 };
 
 export const todosReducer = produce((state, action) => {
@@ -44,6 +45,10 @@ export const todosReducer = produce((state, action) => {
       Object.values(state.entities).forEach((todo) => {
         if (todo.completed) delete state.entities[todo.id];
       });
+      break;
+    case actionTypes.CHANGECOLOR:
+      const { id, color } = action.payload;
+      state.entities[id].color = color;
       break;
   }
 }, initState);
@@ -78,6 +83,13 @@ export const markAllCompleted = () => {
 export const clearCompleted = () => {
   return {
     type: actionTypes.CLEARCOMPLETED,
+  };
+};
+
+export const changeColor = (color, id) => {
+  return {
+    type: actionTypes.CHANGECOLOR,
+    payload: { id, color },
   };
 };
 

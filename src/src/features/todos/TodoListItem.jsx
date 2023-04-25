@@ -1,8 +1,7 @@
 import { AiFillDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleTodo, deleteTodo } from "./todosSlice";
-
-const availableColors = ["green", "red", "black", "orang", "aqua"];
+import { toggleTodo, deleteTodo, changeColor } from "./todosSlice";
+import { availableColors } from "../filters/filtersSlice";
 
 const capitalize = (s) => s[0].toUpperCase() + s.slice(1);
 
@@ -13,10 +12,10 @@ function TodoListItem({ id }) {
 
   const dispatch = useDispatch();
 
-  const colorOptions = availableColors.map((color) => (
-    <options key={color} value={color}>
-      {capitalize(color)}
-    </options>
+  const colorOptions = availableColors.map((c) => (
+    <option style={{ fontSize: "19px" }} key={c} value={c}>
+      {capitalize(c)}
+    </option>
   ));
 
   function handleCompleted() {
@@ -25,6 +24,11 @@ function TodoListItem({ id }) {
 
   function handleDelete() {
     dispatch(deleteTodo(todo.id));
+  }
+
+  function handleColorChange(event) {
+    const color = event.target.value;
+    dispatch(changeColor(color, id));
   }
 
   return (
@@ -44,6 +48,7 @@ function TodoListItem({ id }) {
             className="colorPicker"
             defaultValue={color}
             style={{ color }}
+            onChange={handleColorChange}
           >
             <option value=""></option>
             {colorOptions}
