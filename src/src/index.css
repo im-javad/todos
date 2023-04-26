@@ -591,3 +591,8 @@ form.colorSelection label {
 form.colorSelection input[type="checkbox"] {
   margin-right: 5px;
 }
+
+/* -------------------------------------- */
+.h-100-vh{
+  height: 100vh;
+}

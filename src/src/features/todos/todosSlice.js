@@ -18,6 +18,7 @@ export const actionTypes = {
   CHANGECOLOR: "todos/ChangeColor",
   SUCCESSFETCHTODOS: "todos/SuccessFetchTodos",
   FAILFETCHTODOS: "todos/FailFetchTodos",
+  INLOADING: "todos/InLoading",
 };
 
 export const todosReducer = produce((state, action) => {
@@ -49,6 +50,9 @@ export const todosReducer = produce((state, action) => {
       const { id, color } = action.payload;
       state.entities[id].color = color;
       break;
+    case action.INLOADING:
+      state.isLoadin = true;
+      break;
     case actionTypes.SUCCESSFETCHTODOS:
       const todos = action.payload;
       const newEntities = {};
@@ -56,9 +60,12 @@ export const todosReducer = produce((state, action) => {
         newEntities[todo.id] = todo;
       });
       state.entities = newEntities;
+      state.isLoadin = false;
       state.failFetch = false;
+      break;
     case actionTypes.FAILFETCHTODOS:
       state.failFetch = true;
+      break;
   }
 }, initState);
 
@@ -112,11 +119,21 @@ const successFetch = (todos) => {
 const failFetch = () => {
   return {
     type: actionTypes.FAILFETCHTODOS,
-  }
-}
+  };
+};
+
+const inLoading = () => {
+  return {
+    type: actionTypes.INLOADING,
+  };
+};
 
 export const fetchTodos = (dispatch) => {
-  client.get("todos").then((todos) => dispatch(successFetch(todos))).catch(error => failFetch());
+  dispatch(inLoading);
+  client
+    .get("todos")
+    .then((todos) => dispatch(successFetch(todos)))
+    .catch((error) => failFetch());
 };
 
 export const selectTodoEntities = (state) => state.todos.entities;
