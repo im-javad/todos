@@ -7,6 +7,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.2.3",
+    "concurrently": "^8.0.1",
     "immer": "^10.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -22,8 +23,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "json-server": "json-server --watch ./api/db.json --port 7777",
+    "dev": "concurrently \"npm start\" \"npm run json-server\""
   },
+  "proxi": "http://localhost:7777",
   "eslintConfig": {
     "extends": [
       "react-app",
