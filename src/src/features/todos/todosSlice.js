@@ -1,15 +1,12 @@
 import { produce } from "immer";
 import { availableStatus, selectFilters } from "../filters/filtersSlice";
 import { createSelector } from "reselect";
+import { client } from "../../api/client";
 
 const initState = {
-  entities: {
-    1: { id: 1, text: "Deign ui", completed: true, color: "red" },
-    2: { id: 2, text: "discover state", completed: false },
-    3: { id: 3, text: "discover actions", completed: false },
-    4: { id: 4, text: "implement reducer", completed: true, color: "aqua" },
-    5: { id: 5, text: "Complete patterns", completed: false, color: "orange" },
-  },
+  isLoadin: true,
+  entities: {},
+  failFetch: false,
 };
 
 export const actionTypes = {
@@ -19,6 +16,8 @@ export const actionTypes = {
   MARKALLCOMPLETED: "todos/MarkAllCompleted",
   CLEARCOMPLETED: "todos/ClearCompleted",
   CHANGECOLOR: "todos/ChangeColor",
+  SUCCESSFETCHTODOS: "todos/SuccessFetchTodos",
+  FAILFETCHTODOS: "todos/FailFetchTodos",
 };
 
 export const todosReducer = produce((state, action) => {
@@ -50,6 +49,16 @@ export const todosReducer = produce((state, action) => {
       const { id, color } = action.payload;
       state.entities[id].color = color;
       break;
+    case actionTypes.SUCCESSFETCHTODOS:
+      const todos = action.payload;
+      const newEntities = {};
+      todos.forEach((todo) => {
+        newEntities[todo.id] = todo;
+      });
+      state.entities = newEntities;
+      state.failFetch = false;
+    case actionTypes.FAILFETCHTODOS:
+      state.failFetch = true;
   }
 }, initState);
 
@@ -91,6 +100,23 @@ export const changeColor = (color, id) => {
     type: actionTypes.CHANGECOLOR,
     payload: { id, color },
   };
+};
+
+const successFetch = (todos) => {
+  return {
+    type: actionTypes.SUCCESSFETCHTODOS,
+    payload: todos,
+  };
+};
+
+const failFetch = () => {
+  return {
+    type: actionTypes.FAILFETCHTODOS,
+  }
+}
+
+export const fetchTodos = (dispatch) => {
+  client.get("todos").then((todos) => dispatch(successFetch(todos))).catch(error => failFetch());
 };
 
 export const selectTodoEntities = (state) => state.todos.entities;

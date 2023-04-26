@@ -5,8 +5,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import { Provider } from "react-redux";
 import store from "./store";
+import { fetchTodos } from "./features/todos/todosSlice";
 
 const root = ReactDomClient.createRoot(document.getElementById("root"));
+
+store.dispatch(fetchTodos);
 
 root.render(
   <React.StrictMode>

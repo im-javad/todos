@@ -16,6 +16,7 @@
     "react-scripts": "5.0.1",
     "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.4.2",
     "reselect": "^4.1.8",
     "web-vitals": "^2.1.4"
   },
@@ -27,7 +28,7 @@
     "json-server": "json-server --watch ./api/db.json --port 7777",
     "dev": "concurrently \"npm start\" \"npm run json-server\""
   },
-  "proxi": "http://localhost:7777",
+  "proxy": "http://localhost:7777/",
   "eslintConfig": {
     "extends": [
       "react-app",
