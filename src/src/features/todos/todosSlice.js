@@ -69,10 +69,10 @@ export const todosReducer = produce((state, action) => {
   }
 }, initState);
 
-export const todoAdd = (text) => {
+export const todoAdd = (todo) => {
   return {
     type: actionTypes.ADDTODO,
-    payload: { id: 77, text: text, completed: false },
+    payload: todo,
   };
 };
 
@@ -133,7 +133,19 @@ export const fetchTodos = (dispatch) => {
   client
     .get("todos")
     .then((todos) => dispatch(successFetch(todos)))
-    .catch((error) => failFetch());
+    .catch((error) => dispatch(failFetch()));
+};
+
+export const seveNewTodo = (text) => {
+  return async function storeTodoThunk(dispatch) {
+    const initTodo = {
+      text,
+      completed: false,
+    };
+    const todo = await client.post("todos", initTodo);
+    dispatch(todoAdd(todo));
+    return 777;
+  };
 };
 
 export const selectTodoEntities = (state) => state.todos.entities;

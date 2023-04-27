@@ -26,7 +26,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "json-server": "json-server --watch ./api/db.json --port 7777",
+    "json-server": "json-server --watch ./api/db.json --port 7777 --delay 1500",
     "dev": "concurrently \"npm start\" \"npm run json-server\""
   },
   "proxy": "http://localhost:7777/",
