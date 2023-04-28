@@ -1,10 +1,9 @@
-import { applyMiddleware, legacy_createStore as createStore } from "redux";
 import appReducer from "./reducer";
-import { composeWithDevTools } from "redux-devtools-extension";
-import thunk from "redux-thunk";
+import { configureStore } from "@reduxjs/toolkit";
 
-const composeEnhancers = composeWithDevTools(applyMiddleware(thunk));
-
-const store = createStore(appReducer, composeEnhancers);
+const store = configureStore({
+  reducer: appReducer,
+  devTools: process.env.REACT_APP_PROJECT_STATUS === "dev",
+});
 
 export default store;
