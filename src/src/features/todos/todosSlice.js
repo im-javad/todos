@@ -2,6 +2,7 @@ import { produce } from "immer";
 import { availableStatus, selectFilters } from "../filters/filtersSlice";
 import { createSelector } from "reselect";
 import { client } from "../../api/client";
+import { createAction } from "@reduxjs/toolkit";
 
 const initState = {
   isLoadin: true,
@@ -69,64 +70,45 @@ export const todosReducer = produce((state, action) => {
   }
 }, initState);
 
-export const todoAdd = (todo) => {
-  return {
-    type: actionTypes.ADDTODO,
-    payload: todo,
-  };
-};
+export const todoAdd = createAction(actionTypes.ADDTODO);
 
-export const toggleTodo = (id) => {
+export const toggleTodo = createAction(actionTypes.TOGGLETODO, (id) => {
   return {
-    type: actionTypes.TOGGLETODO,
     payload: { id },
   };
-};
+});
 
-export const deleteTodo = (id) => {
+export const deleteTodo = createAction(actionTypes.DELETETODO, (id) => {
   return {
-    type: actionTypes.DELETETODO,
     payload: { id },
   };
-};
+});
 
-export const markAllCompleted = () => {
-  return {
-    type: actionTypes.MARKALLCOMPLETED,
-  };
-};
+export const markAllCompleted = createAction(actionTypes.MARKALLCOMPLETED);
 
-export const clearCompleted = () => {
-  return {
-    type: actionTypes.CLEARCOMPLETED,
-  };
-};
+export const clearCompleted = createAction(actionTypes.CLEARCOMPLETED);
 
-export const changeColor = (color, id) => {
-  return {
-    type: actionTypes.CHANGECOLOR,
-    payload: { id, color },
-  };
-};
+export const changeColor = createAction(
+  actionTypes.CHANGECOLOR,
+  (color, id) => {
+    return {
+      payload: { id, color },
+    };
+  }
+);
 
-const successFetch = (todos) => {
-  return {
-    type: actionTypes.SUCCESSFETCHTODOS,
-    payload: todos,
-  };
-};
+export const successFetch = createAction(
+  actionTypes.SUCCESSFETCHTODOS,
+  (todos) => {
+    return {
+      payload: todos,
+    };
+  }
+);
 
-const failFetch = () => {
-  return {
-    type: actionTypes.FAILFETCHTODOS,
-  };
-};
+const failFetch = createAction(actionTypes.FAILFETCHTODOS);
 
-const inLoading = () => {
-  return {
-    type: actionTypes.INLOADING,
-  };
-};
+const inLoading = createAction(actionTypes.INLOADING);
 
 export const fetchTodos = (dispatch) => {
   dispatch(inLoading);
@@ -144,7 +126,6 @@ export const seveNewTodo = (text) => {
     };
     const todo = await client.post("todos", initTodo);
     dispatch(todoAdd(todo));
-    return 777;
   };
 };
 
