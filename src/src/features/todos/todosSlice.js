@@ -3,99 +3,155 @@ import { availableStatus, selectFilters } from "../filters/filtersSlice";
 import { createSelector } from "reselect";
 import { client } from "../../api/client";
 import { createAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-const initState = {
+const initialState = {
   isLoadin: true,
   entities: {},
   failFetch: false,
 };
 
 export const actionTypes = {
-  ADDTODO: "todos/AddTodo",
-  DELETETODO: "todos/DeleteTodo",
-  TOGGLETODO: "todos/ToggleTodo",
-  MARKALLCOMPLETED: "todos/MarkAllCompleted",
-  CLEARCOMPLETED: "todos/ClearCompleted",
-  CHANGECOLOR: "todos/ChangeColor",
+  TOGGLETODO: "todos/toggleTodo",
+  ADDTODO: "todos/addTodo",
+  DELETETODO: "todos/deleteTodo",
+  MARKALLCOMPLETED: "todos/markAllCompleted",
+  CLEARCOMPLETED: "todos/clearCompleted",
+  CHANGECOLOR: "todos/changeColor",
   SUCCESSFETCHTODOS: "todos/SuccessFetchTodos",
   FAILFETCHTODOS: "todos/FailFetchTodos",
   INLOADING: "todos/InLoading",
 };
 
-export const todosReducer = produce((state, action) => {
-  switch (action.type) {
-    case actionTypes.TOGGLETODO:
+export const todosSlice = createSlice({
+  name: "todos",
+  initialState,
+  reducers: {
+    toggleTodo(state, action) {
       const toggledTodoId = action.payload.id;
       const todoCompletedStatus = state.entities[toggledTodoId];
       todoCompletedStatus.completed = !todoCompletedStatus.completed;
-      break;
-    case actionTypes.ADDTODO:
+    },
+    AddTodo(state, action) {
       const todo = action.payload;
       state.entities[todo.id] = todo;
-      break;
-    case actionTypes.DELETETODO:
+    },
+    deleteTodo(state, action) {
       const deletedTodoId = action.payload.id;
       delete state.entities[deletedTodoId];
-      break;
-    case actionTypes.MARKALLCOMPLETED:
+    },
+    markAllCompleted(state) {
       Object.values(state.entities).forEach((todo) => {
         state.entities[todo.id].completed = true;
       });
-      break;
-    case actionTypes.CLEARCOMPLETED:
+    },
+    clearCompleted(state) {
       Object.values(state.entities).forEach((todo) => {
         if (todo.completed) delete state.entities[todo.id];
       });
-      break;
-    case actionTypes.CHANGECOLOR:
-      const { id, color } = action.payload;
-      state.entities[id].color = color;
-      break;
-    case action.INLOADING:
-      state.isLoadin = true;
-      break;
-    case actionTypes.SUCCESSFETCHTODOS:
-      const todos = action.payload;
-      const newEntities = {};
-      todos.forEach((todo) => {
-        newEntities[todo.id] = todo;
-      });
-      state.entities = newEntities;
-      state.isLoadin = false;
-      state.failFetch = false;
-      break;
-    case actionTypes.FAILFETCHTODOS:
-      state.failFetch = true;
-      break;
-  }
-}, initState);
-
-export const todoAdd = createAction(actionTypes.ADDTODO);
-
-export const toggleTodo = createAction(actionTypes.TOGGLETODO, (id) => {
-  return {
-    payload: { id },
-  };
+    },
+    changeColor: {
+      reducer(state, action) {
+        const { id, color } = action.payload;
+        state.entities[id].color = color;
+      },
+      prepare(id, color) {
+        return {
+          payload: {
+            id,
+            color,
+          },
+        };
+      },
+    },
+  },
 });
 
-export const deleteTodo = createAction(actionTypes.DELETETODO, (id) => {
-  return {
-    payload: { id },
-  };
-});
+console.log(todosSlice);
 
-export const markAllCompleted = createAction(actionTypes.MARKALLCOMPLETED);
+export const {
+  toggleTodo,
+  addTodo,
+  deleteTodo,
+  markAllCompleted,
+  clearCompleted,
+  changeColor,
+} = todosSlice.actions;
 
-export const clearCompleted = createAction(actionTypes.CLEARCOMPLETED);
+// export const todosReducer = produce((state, action) => {
+//   switch (action.type) {
+//     case actionTypes.TOGGLETODO:
+//       const toggledTodoId = action.payload.id;
+//       const todoCompletedStatus = state.entities[toggledTodoId];
+//       todoCompletedStatus.completed = !todoCompletedStatus.completed;
+//       break;
+//     case actionTypes.ADDTODO:
+//       const todo = action.payload;
+//       state.entities[todo.id] = todo;
+//       break;
+//     case actionTypes.DELETETODO:
+//       const deletedTodoId = action.payload.id;
+//       delete state.entities[deletedTodoId];
+//       break;
+//     case actionTypes.MARKALLCOMPLETED:
+//       Object.values(state.entities).forEach((todo) => {
+//         state.entities[todo.id].completed = true;
+//       });
+//       break;
+//     case actionTypes.CLEARCOMPLETED:
+//       Object.values(state.entities).forEach((todo) => {
+//         if (todo.completed) delete state.entities[todo.id];
+//       });
+//       break;
+//     case actionTypes.CHANGECOLOR:
+//       const { id, color } = action.payload;
+//       state.entities[id].color = color;
+//       break;
+//     case action.INLOADING:
+//       state.isLoadin = true;
+//       break;
+//     case actionTypes.SUCCESSFETCHTODOS:
+//       const todos = action.payload;
+//       const newEntities = {};
+//       todos.forEach((todo) => {
+//         newEntities[todo.id] = todo;
+//       });
+//       state.entities = newEntities;
+//       state.isLoadin = false;
+//       state.failFetch = false;
+//       break;
+//     case actionTypes.FAILFETCHTODOS:
+//       state.failFetch = true;
+//       break;
+//   }
+// }, initialState);
 
-export const changeColor = createAction(
-  actionTypes.CHANGECOLOR,
-  (color, id) => {
-    return {
-      payload: { id, color },
-    };
-  }
-);
+// export const todoAdd = createAction(actionTypes.ADDTODO);
+
+// export const toggleTodo = createAction(actionTypes.TOGGLETODO, (id) => {
+//   return {
+//     payload: { id },
+//   };
+// });
+
+// export const deleteTodo = createAction(actionTypes.DELETETODO, (id) => {
+//   return {
+//     payload: { id },
+//   };
+// });
+
+// export const markAllCompleted = createAction(actionTypes.MARKALLCOMPLETED);
+
+// export const clearCompleted = createAction(actionTypes.CLEARCOMPLETED);
+
+// export const changeColor = createAction(
+//   actionTypes.CHANGECOLOR,
+//   (color, id) => {
+//     return {
+//       payload: { id, color },
+//     };
+//   }
+// );
 
 export const successFetch = createAction(
   actionTypes.SUCCESSFETCHTODOS,

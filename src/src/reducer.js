@@ -1,9 +1,9 @@
 import { combineReducers } from "redux";
-import { todosReducer } from "./features/todos/todosSlice";
+import { todosSlice } from "./features/todos/todosSlice";
 import { filterReducer } from "./features/filters/filtersSlice";
 
 const appReducer = combineReducers({
-  todos: todosReducer,
+  todos: todosSlice,
   filters: filterReducer,
 });
 
